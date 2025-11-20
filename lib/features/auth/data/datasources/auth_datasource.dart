@@ -95,35 +95,48 @@ class AuthDatasource {
   /// Sign in with Google
   Future<UserEntity?> signInWithGoogle() async {
     try {
+      debugPrint('🔐 Datasource: Initiating Google Sign-In flow');
+
       // Trigger the Google Sign-In flow
       final GoogleSignIn googleSignIn = GoogleSignIn();
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
       if (googleUser == null) {
         // User canceled the sign-in
+        debugPrint('🔐 Datasource: User canceled sign-in');
         return null;
       }
 
+      debugPrint('🔐 Datasource: Google user selected: ${googleUser.email}');
+
       // Obtain the auth details from the request
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      debugPrint('🔐 Datasource: Got authentication tokens');
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
+      debugPrint('🔐 Datasource: Created Firebase credential');
 
       // Sign in to Firebase with the Google credential
       final userCredential = await _firebaseAuth.signInWithCredential(credential);
+      debugPrint('🔐 Datasource: Firebase sign-in successful: ${userCredential.user?.uid}');
 
       if (userCredential.user != null) {
-        return UserModel.fromFirebaseUser(userCredential.user!).toEntity();
+        final userEntity = UserModel.fromFirebaseUser(userCredential.user!).toEntity();
+        debugPrint('🔐 Datasource: Returning user entity: ${userEntity.id}');
+        return userEntity;
       }
 
+      debugPrint('🔐 Datasource: userCredential.user is null!');
       return null;
     } on FirebaseAuthException catch (e) {
+      debugPrint('🔐 Datasource: FirebaseAuthException: ${e.code} - ${e.message}');
       throw _handleAuthException(e);
     } catch (e) {
+      debugPrint('🔐 Datasource: Exception: $e');
       throw Exception('Google sign in failed: $e');
     }
   }

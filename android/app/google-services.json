@@ -12,7 +12,16 @@
           "package_name": "com.example.learn_english"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "742280195262-ljutqrlo3nc89pvtki2aq8mtdi8ioqma.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.learn_english",
+            "certificate_hash": "78f09d4b0c062c989de17aa42699869f2074d63b"
+          }
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC9_33K33BRfAuCWVr5SD3TmlU1P-7WThA"

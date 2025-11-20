@@ -144,13 +144,16 @@ class AuthService extends ChangeNotifier {
   /// Also creates/loads user data from Firestore
   Future<UserEntity?> signInWithGoogle() async {
     try {
+      debugPrint('📱 AuthService: Starting Google Sign-In');
       _setLoading(true);
       _setError(null);
 
       // Sign in with Google
       final user = await _authRepository.signInWithGoogle();
+      debugPrint('📱 AuthService: Repository returned user: ${user?.id}');
 
       if (user == null) {
+        debugPrint('📱 AuthService: User is null, sign in canceled');
         _setError('Google sign in canceled');
         _setLoading(false);
         return null;
@@ -158,23 +161,29 @@ class AuthService extends ChangeNotifier {
 
       // Check if user data exists in Firestore
       try {
+        debugPrint('📱 AuthService: Loading user data from Firestore');
         var userData = await _userRepository.getUserData(user.id);
 
         // If user data doesn't exist, create it
         if (userData == null) {
+          debugPrint('📱 AuthService: User data not found, creating new');
           await _userRepository.saveUserData(user);
           userData = user;
+        } else {
+          debugPrint('📱 AuthService: User data loaded from Firestore');
         }
 
         _currentUserData = userData;
       } catch (e) {
-        debugPrint('Warning: Could not load/save user data from Firestore: $e');
+        debugPrint('📱 AuthService: Warning - Could not load/save user data from Firestore: $e');
         _currentUserData = user;
       }
 
       _setLoading(false);
+      debugPrint('📱 AuthService: Sign-In complete, returning user: ${_currentUserData?.id}');
       return _currentUserData;
     } catch (e) {
+      debugPrint('📱 AuthService: Exception during sign in: $e');
       _setLoading(false);
       _setError(e.toString().replaceAll('Exception: ', ''));
       return null;

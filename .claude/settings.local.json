@@ -5,7 +5,9 @@
       "Bash(flutter clean:*)",
       "mcp__ide__getDiagnostics",
       "Bash(flutter run:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(./gradlew signingReport:*)",
+      "Bash(keytool:*)"
     ],
     "deny": [],
     "ask": []
