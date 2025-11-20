@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "742280195262",
+    "project_id": "learning-english-moblie",
+    "storage_bucket": "learning-english-moblie.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:742280195262:android:62a2d018b60bbefcbc42ef",
+        "android_client_info": {
+          "package_name": "com.example.learn_english"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9_33K33BRfAuCWVr5SD3TmlU1P-7WThA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
