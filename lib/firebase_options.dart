@@ -2,18 +2,7 @@
 // ignore_for_file: type=lint
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
-    show defaultTargetPlatform, kIsWeb, TargetPlatform;
-
-/// Default [FirebaseOptions] for use with your Firebase apps.
-///
-/// Example:
-/// ```dart
-/// import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-/// ```
+  show defaultTargetPlatform, kIsWeb, TargetPlatform;
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -41,47 +30,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyANNtqDI1B2Nznkz5JJWKxBIqmY8-LdV9E',
-    appId: '1:742280195262:web:b329172879d77e53bc42ef',
-    messagingSenderId: '742280195262',
-    projectId: 'learning-english-moblie',
-    authDomain: 'learning-english-moblie.firebaseapp.com',
-    storageBucket: 'learning-english-moblie.firebasestorage.app',
+    apiKey: 'AIzaSyCX91l9TGauWeabhe99dQtIJSOuhkDO1R8',
+    appId: '1:503078089220:web:b044fe4e0f58c7384dfb51',
+    messagingSenderId: '503078089220',
+    projectId: 'learning-english-7bc45',
+    authDomain: 'learning-english-7bc45.firebaseapp.com',
+    storageBucket: 'learning-english-7bc45.firebasestorage.app',
+    measurementId: 'G-V5002LZLYB',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyC9_33K33BRfAuCWVr5SD3TmlU1P-7WThA',
-    appId: '1:742280195262:android:62a2d018b60bbefcbc42ef',
-    messagingSenderId: '742280195262',
-    projectId: 'learning-english-moblie',
-    storageBucket: 'learning-english-moblie.firebasestorage.app',
+    apiKey: 'AIzaSyBeo7yyn8IIc-sWQUhW0CkhJYxlkv2zdR4',
+    appId: '1:503078089220:android:34fc72eac13ee13a4dfb51',
+    messagingSenderId: '503078089220',
+    projectId: 'learning-english-7bc45',
+    storageBucket: 'learning-english-7bc45.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCnazEHmbo8Vurx-LmnU44RaCaDRKkX4LU',
-    appId: '1:742280195262:ios:9b7ee183ac572579bc42ef',
-    messagingSenderId: '742280195262',
-    projectId: 'learning-english-moblie',
-    storageBucket: 'learning-english-moblie.firebasestorage.app',
+    apiKey: 'AIzaSyAFwex8l8M1lxIUactYsYL5-LQ8ow-0oZg',
+    appId: '1:503078089220:ios:920018028bbb83f34dfb51',
+    messagingSenderId: '503078089220',
+    projectId: 'learning-english-7bc45',
+    storageBucket: 'learning-english-7bc45.firebasestorage.app',
     iosBundleId: 'com.example.learnEnglish',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCnazEHmbo8Vurx-LmnU44RaCaDRKkX4LU',
-    appId: '1:742280195262:ios:9b7ee183ac572579bc42ef',
-    messagingSenderId: '742280195262',
-    projectId: 'learning-english-moblie',
-    storageBucket: 'learning-english-moblie.firebasestorage.app',
+    apiKey: 'AIzaSyAFwex8l8M1lxIUactYsYL5-LQ8ow-0oZg',
+    appId: '1:503078089220:ios:920018028bbb83f34dfb51',
+    messagingSenderId: '503078089220',
+    projectId: 'learning-english-7bc45',
+    storageBucket: 'learning-english-7bc45.firebasestorage.app',
     iosBundleId: 'com.example.learnEnglish',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyANNtqDI1B2Nznkz5JJWKxBIqmY8-LdV9E',
-    appId: '1:742280195262:web:06c2eab6a96b3c1dbc42ef',
-    messagingSenderId: '742280195262',
-    projectId: 'learning-english-moblie',
-    authDomain: 'learning-english-moblie.firebaseapp.com',
-    storageBucket: 'learning-english-moblie.firebasestorage.app',
+    apiKey: 'AIzaSyCX91l9TGauWeabhe99dQtIJSOuhkDO1R8',
+    appId: '1:503078089220:web:95311f6848cbfe054dfb51',
+    messagingSenderId: '503078089220',
+    projectId: 'learning-english-7bc45',
+    authDomain: 'learning-english-7bc45.firebaseapp.com',
+    storageBucket: 'learning-english-7bc45.firebasestorage.app',
+    measurementId: 'G-77QPG777ZM',
   );
 
 }

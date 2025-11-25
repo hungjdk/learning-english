@@ -1,35 +1,51 @@
 {
   "project_info": {
-    "project_number": "742280195262",
-    "project_id": "learning-english-moblie",
-    "storage_bucket": "learning-english-moblie.firebasestorage.app"
+    "project_number": "503078089220",
+    "project_id": "learning-english-7bc45",
+    "storage_bucket": "learning-english-7bc45.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:742280195262:android:62a2d018b60bbefcbc42ef",
+        "mobilesdk_app_id": "1:503078089220:android:34fc72eac13ee13a4dfb51",
         "android_client_info": {
           "package_name": "com.example.learn_english"
         }
       },
       "oauth_client": [
         {
-          "client_id": "742280195262-ljutqrlo3nc89pvtki2aq8mtdi8ioqma.apps.googleusercontent.com",
+          "client_id": "503078089220-gkmvl5tv22mjdvlqhneijrrgf4g4i7st.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.learn_english",
-            "certificate_hash": "78f09d4b0c062c989de17aa42699869f2074d63b"
+            "certificate_hash": "f51b5e7c8e33c6d121ec7e56a3a9155c6c5ded70"
           }
+        },
+        {
+          "client_id": "503078089220-19bmiftb698brr0f13ji83qsrfp7merm.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC9_33K33BRfAuCWVr5SD3TmlU1P-7WThA"
+          "current_key": "AIzaSyBeo7yyn8IIc-sWQUhW0CkhJYxlkv2zdR4"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "503078089220-19bmiftb698brr0f13ji83qsrfp7merm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "503078089220-d6inh67p0n2oqf0ectal5qa26t0qbc33.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.learnEnglish"
+              }
+            }
+          ]
         }
       }
     }
