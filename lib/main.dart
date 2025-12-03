@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'firebase_options.dart';
@@ -16,9 +18,10 @@ void main() async {
   await dotenv.load(fileName: '.env');
 
   // Khởi tạo Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // Khởi tạo Hive
+  await Hive.initFlutter();
+  await Hive.openBox('topicCache');
 
   // Initialize default admin user if not exists
   final adminService = AdminInitializationService();
@@ -39,9 +42,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         // Auth Service with Firestore integration
-        ChangeNotifierProvider(
-          create: (_) => AuthSetup.createAuthService(),
-        ),
+        ChangeNotifierProvider(create: (_) => AuthSetup.createAuthService()),
         // User Profile Service for editing profile
         ChangeNotifierProvider(
           create: (_) => AuthSetup.createUserProfileService(),

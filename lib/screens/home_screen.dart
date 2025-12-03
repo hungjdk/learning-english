@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:learn_english/features/auth/domain/entities/user_entity.dart';
+import 'package:learn_english/features/topic/screens/topic_list_screen.dart';
 import 'package:provider/provider.dart';
 import '../features/auth/services/auth_service.dart';
 import '../core/theme/app_theme.dart';
@@ -41,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.logout_rounded, color: AppTheme.errorRed),
             const SizedBox(width: 12),
-            Text('Sign Out?'),
+            const Text('Sign Out?'),
           ],
         ),
         content: Text(
@@ -51,12 +53,12 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(backgroundColor: AppTheme.errorRed),
-            child: Text('Sign Out'),
+            child: const Text('Sign Out'),
           ),
         ],
       ),
@@ -68,13 +70,26 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  // ==================== BUILD ====================
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.paleBlue,
-      appBar: _buildAppBar(),
-      drawer: _buildDrawer(),
-      body: _buildBody(),
+    return Consumer<AuthService>(
+      builder: (context, authService, child) {
+        final UserEntity? userData = authService.currentUserData;
+
+        // NOTE: Lấy role đúng từ UserEntity (đã định nghĩa trong feature/auth)
+        // role: 'user' hoặc 'admin'
+        final String role = userData?.role ?? 'user';
+        final bool isAdmin = role == 'admin';
+
+        return Scaffold(
+          backgroundColor: AppTheme.paleBlue,
+          appBar: _buildAppBar(),
+          drawer: _buildDrawer(isAdmin), // NOTE: truyền isAdmin vào drawer
+          body: _buildBody(isAdmin), // NOTE: truyền isAdmin vào body
+        );
+      },
     );
   }
 
@@ -129,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: AppTheme.accentYellow.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(24),
@@ -155,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(width: 12),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: AppTheme.warningYellow.withOpacity(0.1),
               borderRadius: BorderRadius.circular(20),
@@ -189,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // ==================== DRAWER ====================
-  Widget _buildDrawer() {
+  Widget _buildDrawer(bool isAdmin) {
     return Drawer(
       child: Consumer<AuthService>(
         builder: (context, authService, child) {
@@ -207,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
               // Header with user info
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.fromLTRB(24, 60, 24, 24),
+                padding: const EdgeInsets.fromLTRB(24, 60, 24, 24),
                 decoration: BoxDecoration(color: AppTheme.primaryBlue),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -248,7 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     // Name
                     Text(
                       userData?.displayName ?? user?.displayName ?? 'User',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -262,6 +277,40 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.white.withOpacity(0.9),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+
+                    // NOTE: CHIP ROLE hiển thị role 'admin' / 'user'
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.18),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            isAdmin
+                                ? Icons.school_rounded
+                                : Icons.person_rounded,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            isAdmin ? 'Admin / Teacher' : 'User / Student',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -318,7 +367,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         // Navigate to shop
                       },
                     ),
-                    Divider(height: 1),
+
+                    const Divider(height: 1),
+
                     _buildDrawerItem(
                       icon: Icons.help_outline,
                       title: 'Help & Support',
@@ -335,25 +386,64 @@ class _HomeScreenState extends State<HomeScreen> {
                         // Navigate to about
                       },
                     ),
+
+                    // NOTE: Nhóm menu Management chỉ dành cho admin
+                    if (isAdmin) ...[
+                      const Divider(height: 1),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 12, 24, 4),
+                        child: Text(
+                          'Management',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.textGrey,
+                          ),
+                        ),
+                      ),
+                      _buildDrawerItem(
+                        icon: Icons.category_rounded,
+                        title: 'Manage Topics',
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const TopicListScreen(),
+                            ),
+                          );
+                        },
+                      ),
+
+                      _buildDrawerItem(
+                        icon: Icons.translate_rounded,
+                        title: 'Manage Vocabulary',
+                        onTap: () {
+                          Navigator.pop(context);
+                          // TODO: điều hướng đến màn quản lý từ vựng
+                          // Navigator.push(context, MaterialPageRoute(builder: (_) => WordManagementScreen()));
+                        },
+                      ),
+                    ],
                   ],
                 ),
               ),
 
               // Logout button at bottom
               Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: OutlinedButton.icon(
                   onPressed: () {
                     Navigator.pop(context);
                     _handleLogout();
                   },
-                  icon: Icon(Icons.logout_rounded),
-                  label: Text('Sign Out'),
+                  icon: const Icon(Icons.logout_rounded),
+                  label: const Text('Sign Out'),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppTheme.errorRed,
                     side: BorderSide(color: AppTheme.errorRed, width: 2),
-                    padding: EdgeInsets.symmetric(vertical: 14),
-                    minimumSize: Size(double.infinity, 50),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    minimumSize: const Size(double.infinity, 50),
                   ),
                 ),
               ),
@@ -380,12 +470,13 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       onTap: onTap,
-      contentPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
     );
   }
 
   // ==================== BODY ====================
-  Widget _buildBody() {
+  // NOTE: thêm tham số isAdmin để phân biệt UI admin vs user
+  Widget _buildBody(bool isAdmin) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -397,11 +488,46 @@ class _HomeScreenState extends State<HomeScreen> {
 
           const SizedBox(height: 24),
 
-          // Language Path Title
+          // ===== ADMIN VIEW =====
+          if (isAdmin) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                'Teacher tools',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textDark,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            _buildAdminQuickActionsSection(),
+            const SizedBox(height: 24),
+          ]
+          // ===== USER VIEW =====
+          else ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                'Study tools',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textDark,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            _buildStudentQuickActionsSection(),
+            const SizedBox(height: 24),
+          ],
+
+          // My Vocabulary title
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
-              'My Vocabulary', // Changed title
+              'My Vocabulary',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -411,10 +537,190 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 16),
 
-          // NEW: Display the list of words from Firestore
+          // Display the list of words from Firestore
           _buildWordList(),
 
           const SizedBox(height: 80),
+        ],
+      ),
+    );
+  }
+
+  // NOTE: section quick actions dành cho admin (quản lý topic/word)
+  Widget _buildAdminQuickActionsSection() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => TopicListScreen()),
+                );
+              },
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Icon(Icons.category_rounded, size: 26),
+                      SizedBox(height: 8),
+                      Text(
+                        'Manage topics',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Create & edit topics\nfor students',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                // TODO: sang màn manage vocab
+                // Navigator.push(context, MaterialPageRoute(builder: (_) => WordManagementScreen()));
+              },
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Icon(Icons.translate_rounded, size: 26),
+                      SizedBox(height: 8),
+                      Text(
+                        'Manage words',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Update vocabulary\ninside topics',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // NOTE: section quick actions dành cho student (user)
+  Widget _buildStudentQuickActionsSection() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          // Card 1: Browse topics
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                // User sẽ vào TopicListScreen ở chế độ read-only
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const TopicListScreen()),
+                );
+              },
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Icon(Icons.category_outlined, size: 26),
+                      SizedBox(height: 8),
+                      Text(
+                        'Browse topics',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'View all vocabulary\nby topics',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(width: 12),
+
+          // Card 2: Review words (gợi ý, có thể làm quiz sau)
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                // Tạm thời cuộn xuống My Vocabulary
+                // Sau này bạn có thể đổi thành màn Quiz riêng
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //   const SnackBar(content: Text('Coming soon ✨')),
+                // );
+              },
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Icon(Icons.menu_book_outlined, size: 26),
+                      SizedBox(height: 8),
+                      Text(
+                        'Review words',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Check your saved\nvocabulary',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -484,8 +790,8 @@ class _HomeScreenState extends State<HomeScreen> {
   // ==================== DAILY GOAL CARD ====================
   Widget _buildDailyGoalCard() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20),
-      padding: EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(28),
@@ -493,14 +799,14 @@ class _HomeScreenState extends State<HomeScreen> {
           BoxShadow(
             color: AppTheme.primaryBlue.withValues(alpha: 0.08),
             blurRadius: 20,
-            offset: Offset(0, 6),
+            offset: const Offset(0, 6),
           ),
         ],
       ),
       child: Stack(
         children: [
           // Decorative emoji in corner
-          Positioned(
+          const Positioned(
             top: -5,
             right: -5,
             child: Text('🎯', style: TextStyle(fontSize: 35)),
@@ -522,11 +828,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text('🌟', style: TextStyle(fontSize: 20)),
+                      const Text('🌟', style: TextStyle(fontSize: 20)),
                     ],
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: AppTheme.successGreen.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(20),
@@ -569,7 +878,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // ==================== (Old) LEARNING PATH WIDGETS ====================
-  // I've kept these here in case you want to use them later.
 
   Widget _buildLearningPath() {
     return Column(
@@ -660,7 +968,7 @@ class _HomeScreenState extends State<HomeScreen> {
               _startLesson(lessonNumber);
             },
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20),
+        margin: const EdgeInsets.symmetric(horizontal: 20),
         child: Row(
           children: [
             // Lesson Circle
@@ -699,7 +1007,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         : [],
                   ),
                   child: isLocked
-                      ? Icon(Icons.lock, color: Colors.grey, size: 32)
+                      ? const Icon(Icons.lock, color: Colors.grey, size: 32)
                       : isCompleted
                       ? Icon(
                           Icons.check,
@@ -718,7 +1026,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Stack(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(24),
@@ -726,7 +1034,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         BoxShadow(
                           color: AppTheme.primaryBlue.withValues(alpha: 0.08),
                           blurRadius: 16,
-                          offset: Offset(0, 4),
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
@@ -745,8 +1053,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             if (isActive)
                               Container(
-                                margin: EdgeInsets.only(left: 8),
-                                padding: EdgeInsets.symmetric(
+                                margin: const EdgeInsets.only(left: 8),
+                                padding: const EdgeInsets.symmetric(
                                   horizontal: 8,
                                   vertical: 2,
                                 ),
@@ -790,7 +1098,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Positioned(
                       top: 8,
                       right: 8,
-                      child: Text(emoji, style: TextStyle(fontSize: 28)),
+                      child: Text(emoji, style: const TextStyle(fontSize: 28)),
                     ),
                 ],
               ),
@@ -803,7 +1111,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildPathConnector() {
     return Container(
-      margin: EdgeInsets.only(left: 59),
+      margin: const EdgeInsets.only(left: 59),
       width: 4,
       height: 30,
       decoration: BoxDecoration(
@@ -826,18 +1134,20 @@ class _HomeScreenState extends State<HomeScreen> {
             Text('Start Lesson $lessonNumber?'),
           ],
         ),
-        content: Text('You\'re about to start a new lesson. Are you ready?'),
+        content: const Text(
+          'You\'re about to start a new lesson. Are you ready?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Not Yet'),
+            child: const Text('Not Yet'),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               // Start lesson logic here
             },
-            child: Text('Let\'s Go!'),
+            child: const Text('Let\'s Go!'),
           ),
         ],
       ),
@@ -857,7 +1167,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         height: MediaQuery.of(context).size.height * 0.75,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(25),
@@ -868,7 +1178,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             // Handle bar
             Container(
-              margin: EdgeInsets.only(top: 12),
+              margin: const EdgeInsets.only(top: 12),
               width: 40,
               height: 4,
               decoration: BoxDecoration(
@@ -880,7 +1190,7 @@ class _HomeScreenState extends State<HomeScreen> {
             // Content
             Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 child: Column(
                   children: [
                     // Avatar
@@ -932,7 +1242,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     // Email
                     Container(
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 8,
                       ),
@@ -1048,8 +1358,8 @@ class _HomeScreenState extends State<HomeScreen> {
     Color? valueColor,
   }) {
     return Container(
-      margin: EdgeInsets.only(bottom: 12),
-      padding: EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppTheme.paleBlue.withOpacity(0.5),
         borderRadius: BorderRadius.circular(12),
