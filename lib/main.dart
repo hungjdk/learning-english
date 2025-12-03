@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'firebase_options.dart';
 import 'features/auth/auth_setup.dart';
+import 'features/auth/services/admin_initialization_service.dart';
 import 'screens/auth_wrapper.dart';
 import 'core/theme/app_theme.dart';
 
@@ -18,6 +19,14 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Initialize default admin user if not exists
+  final adminService = AdminInitializationService();
+  final adminExists = await adminService.adminExists();
+  if (!adminExists) {
+    print('Initializing default admin user...');
+    await adminService.initializeDefaultAdmin();
+  }
 
   runApp(const MyApp());
 }

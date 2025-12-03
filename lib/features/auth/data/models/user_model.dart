@@ -11,6 +11,7 @@ class UserModel {
   final bool emailVerified;
   final DateTime createdAt;
   final DateTime? lastLoginAt;
+  final String role; // 'admin' or 'user'
   final UserProfileModel? profile;
   final UserSettingsModel settings;
 
@@ -22,6 +23,7 @@ class UserModel {
     required this.emailVerified,
     required this.createdAt,
     this.lastLoginAt,
+    this.role = 'user',
     this.profile,
     required this.settings,
   });
@@ -55,6 +57,7 @@ class UserModel {
       emailVerified: json['emailVerified'] as bool? ?? false,
       createdAt: _parseDateTime(json['createdAt']),
       lastLoginAt: _parseDateTime(json['lastLoginAt']),
+      role: json['role'] as String? ?? 'user',
       profile: json['profile'] != null
           ? UserProfileModel.fromJson(json['profile'] as Map<String, dynamic>)
           : null,
@@ -74,6 +77,7 @@ class UserModel {
       'emailVerified': emailVerified,
       'createdAt': createdAt.toIso8601String(),
       'lastLoginAt': lastLoginAt?.toIso8601String(),
+      'role': role,
       'profile': profile?.toJson(),
       'settings': settings.toJson(),
       'updatedAt': DateTime.now().toIso8601String(),
@@ -92,6 +96,7 @@ class UserModel {
       emailVerified: emailVerified,
       createdAt: createdAt,
       lastLoginAt: lastLoginAt,
+      role: role,
       profile: profile?.toEntity(),
       settings: settings.toEntity(),
     );
@@ -107,6 +112,7 @@ class UserModel {
       emailVerified: entity.emailVerified,
       createdAt: entity.createdAt,
       lastLoginAt: entity.lastLoginAt,
+      role: entity.role,
       profile: entity.profile != null
           ? UserProfileModel.fromEntity(entity.profile!)
           : null,
@@ -137,6 +143,7 @@ class UserModel {
     bool? emailVerified,
     DateTime? createdAt,
     DateTime? lastLoginAt,
+    String? role,
     UserProfileModel? profile,
     UserSettingsModel? settings,
   }) {
@@ -148,6 +155,7 @@ class UserModel {
       emailVerified: emailVerified ?? this.emailVerified,
       createdAt: createdAt ?? this.createdAt,
       lastLoginAt: lastLoginAt ?? this.lastLoginAt,
+      role: role ?? this.role,
       profile: profile ?? this.profile,
       settings: settings ?? this.settings,
     );
