@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/word.dart';
+import '../data/models/word.dart';
 
 /// Service class to manage vocabulary CRUD operations with Firestore.
 class VocabService {
   // A reference to the 'words' collection in Firestore.
-  final CollectionReference _wordsCollection =
-      FirebaseFirestore.instance.collection('words');
+  final CollectionReference _wordsCollection = FirebaseFirestore.instance
+      .collection('words');
 
   /// CREATE: Adds a new [word] to the Firestore collection.
   Future<void> addWord(Word word) {

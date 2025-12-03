@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../features/auth/services/auth_service.dart';
 import '../core/theme/app_theme.dart';
-import '../models/word.dart';
-import '../services/vocab_service.dart';
+import '../features/auth/data/models/word.dart';
+import '../features/auth/services/vocab_service.dart';
 import 'edit_profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
