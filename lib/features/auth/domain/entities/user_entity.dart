@@ -9,6 +9,7 @@ class UserEntity {
   final bool emailVerified;
   final DateTime createdAt;
   final DateTime? lastLoginAt;
+  final String role; // 'admin' or 'user'
   final UserProfile? profile;
   final UserSettings settings;
 
@@ -20,6 +21,7 @@ class UserEntity {
     required this.emailVerified,
     required this.createdAt,
     this.lastLoginAt,
+    this.role = 'user',
     this.profile,
     required this.settings,
   });
@@ -32,6 +34,7 @@ class UserEntity {
     bool? emailVerified,
     DateTime? createdAt,
     DateTime? lastLoginAt,
+    String? role,
     UserProfile? profile,
     UserSettings? settings,
   }) {
@@ -43,6 +46,7 @@ class UserEntity {
       emailVerified: emailVerified ?? this.emailVerified,
       createdAt: createdAt ?? this.createdAt,
       lastLoginAt: lastLoginAt ?? this.lastLoginAt,
+      role: role ?? this.role,
       profile: profile ?? this.profile,
       settings: settings ?? this.settings,
     );
